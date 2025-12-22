@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- DESIGN SYSTEM (COHÉRENT AVEC DASHBOARD) --- */
+        /* --- DESIGN SYSTEM --- */
         :root {
             --bordeaux: #580F45; 
             --orange: #F48C2E;
@@ -32,7 +32,7 @@
             min-height: 100vh;
         }
 
-        /* --- SIDEBAR (Copie conforme pour navigation fluide) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--bordeaux);
@@ -58,13 +58,12 @@
 
         .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         h1 { font-family: 'Montserrat', sans-serif; margin: 0; color: var(--bordeaux); }
-        h2 { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; margin-bottom: 1rem; color: var(--blue); display: flex; align-items: center; gap: 10px; }
 
-        /* --- SECTIONS DE RESSOURCES --- */
+        /* --- SECTIONS --- */
         .resource-section { margin-bottom: 3rem; }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
@@ -74,19 +73,12 @@
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
             cursor: pointer;
             border: 1px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
         }
-        .folder-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        }
+        .folder-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 
-        /* Variations de couleurs par type */
         .type-formation .folder-icon { color: var(--teal); background: rgba(46, 175, 125, 0.1); }
         .type-formation:hover { border-color: var(--teal); }
 
@@ -94,20 +86,25 @@
         .type-projet:hover { border-color: var(--orange); }
 
         .folder-icon {
-            width: 50px; height: 50px;
-            border-radius: 10px;
+            width: 50px; height: 50px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.5rem; margin-bottom: 1rem;
         }
 
         .folder-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
         .folder-info { font-size: 0.85rem; color: #888; }
         
-        /* Liste de fichiers simulée (cachée par défaut) */
+        /* Liste de fichiers */
         .file-list { display: none; margin-top: 1rem; width: 100%; border-top: 1px solid #eee; padding-top: 10px; }
-        .file-item { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.9rem; color: #555; }
-        .file-item:hover { color: var(--bordeaux); }
+        
+        /* Style des liens de téléchargement */
+        .file-link {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; font-size: 0.9rem; color: #555; text-decoration: none;
+            transition: color 0.2s;
+        }
+        .file-link:hover { color: var(--bordeaux); font-weight: 600; }
+        .file-link i { margin-right: 8px; }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
@@ -142,11 +139,14 @@
             <div>
                 <small>Projet Inno / Bibliothèque</small>
                 <h1>Ressources Pédagogiques & Projet</h1>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                    <i class="fa-solid fa-info-circle"></i> Les fichiers sont stockés localement dans le dossier <code>/assets/documents/</code>
+                </p>
             </div>
-            <!-- Bouton d'ajout global -->
-            <button style="background: var(--bordeaux); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Ajouter un fichier
-            </button>
+            <!-- Lien vers le dépôt GitHub pour ajouter des fichiers -->
+            <a href="https://github.com" target="_blank" style="background: var(--bordeaux); color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-brands fa-github"></i> Gérer mes fichiers
+            </a>
         </div>
 
         <!-- ZONE 1 : FORMATION (Vert/Teal) -->
@@ -160,32 +160,30 @@
                 <div class="folder-card type-formation" onclick="toggleFiles(this)">
                     <div class="folder-icon"><i class="fa-solid fa-file-pdf"></i></div>
                     <div class="folder-title">Documents & Supports</div>
-                    <div class="folder-info">12 fichiers • PDF, PPTX</div>
+                    <div class="folder-info">Supports de cours PDF</div>
                     <div class="file-list">
-                        <div class="file-item"><i class="fa-regular fa-file-pdf"></i> Module_1_Intro.pdf</div>
-                        <div class="file-item"><i class="fa-regular fa-file-powerpoint"></i> Présentation_Q1.pptx</div>
-                        <div class="file-item"><i class="fa-regular fa-file-lines"></i> Syllabus_2024.docx</div>
+                        <!-- Exemple de lien réel : assets/documents/mon-fichier.pdf -->
+                        <a href="assets/documents/module1.pdf" class="file-link" download>
+                            <span><i class="fa-regular fa-file-pdf"></i> Module_1_Intro.pdf</span>
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                        <a href="assets/documents/syllabus.docx" class="file-link" download>
+                            <span><i class="fa-regular fa-file-lines"></i> Syllabus_2024.docx</span>
+                            <i class="fa-solid fa-download"></i>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Dossier Vidéos -->
+                <!-- Dossier Vidéos (Liens externes recommandés) -->
                 <div class="folder-card type-formation" onclick="toggleFiles(this)">
                     <div class="folder-icon"><i class="fa-solid fa-circle-play"></i></div>
                     <div class="folder-title">Vidéos Learning</div>
-                    <div class="folder-info">5 fichiers • MP4</div>
+                    <div class="folder-info">Liens Youtube / Drive</div>
                     <div class="file-list">
-                        <div class="file-item"><i class="fa-solid fa-film"></i> Teaser_Projet.mp4</div>
-                        <div class="file-item"><i class="fa-solid fa-film"></i> Tutoriel_Outils.mp4</div>
-                    </div>
-                </div>
-
-                <!-- Dossier Quiz -->
-                <div class="folder-card type-formation" onclick="toggleFiles(this)">
-                    <div class="folder-icon"><i class="fa-solid fa-list-check"></i></div>
-                    <div class="folder-title">Quiz & Évaluations</div>
-                    <div class="folder-info">3 fichiers • SCORM/HTML</div>
-                    <div class="file-list">
-                        <div class="file-item"><i class="fa-solid fa-puzzle-piece"></i> Quiz_Validation_M1.zip</div>
+                        <a href="https://youtube.com" target="_blank" class="file-link">
+                            <span><i class="fa-brands fa-youtube"></i> Teaser Projet (Youtube)</span>
+                            <i class="fa-solid fa-external-link-alt"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -199,35 +197,21 @@
             </h2>
             <div class="grid-container">
                 
-                <!-- Dossier Enquêtes -->
-                <div class="folder-card type-projet" onclick="toggleFiles(this)">
-                    <div class="folder-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
-                    <div class="folder-title">Enquêtes</div>
-                    <div class="folder-info">Resultats et Données brutes</div>
-                    <div class="file-list">
-                        <div class="file-item"><i class="fa-solid fa-table"></i> Resultats_Sondage_Mai.xlsx</div>
-                        <div class="file-item"><i class="fa-solid fa-chart-pie"></i> Analyse_Besoins.pdf</div>
-                    </div>
-                </div>
-
-                <!-- Dossier Témoignages -->
-                <div class="folder-card type-projet" onclick="toggleFiles(this)">
-                    <div class="folder-icon"><i class="fa-solid fa-comments"></i></div>
-                    <div class="folder-title">Témoignages</div>
-                    <div class="folder-info">Audio & Transcriptions</div>
-                    <div class="file-list">
-                        <div class="file-item"><i class="fa-solid fa-microphone"></i> Interview_Directeur.mp3</div>
-                        <div class="file-item"><i class="fa-regular fa-file-word"></i> Verbatim_Ateliers.docx</div>
-                    </div>
-                </div>
-
-                <!-- Dossier Grilles -->
+                <!-- Dossier Grilles d'entretien -->
                 <div class="folder-card type-projet" onclick="toggleFiles(this)">
                     <div class="folder-icon"><i class="fa-solid fa-table-list"></i></div>
                     <div class="folder-title">Grilles d'Entretien</div>
-                    <div class="folder-info">Modèles vierges</div>
+                    <div class="folder-info">Modèles à télécharger</div>
                     <div class="file-list">
-                        <div class="file-item"><i class="fa-solid fa-file-contract"></i> Grille_Qualitative_V2.pdf</div>
+                        <!-- Lien vers un fichier local -->
+                        <a href="assets/documents/grille_entretien.pdf" class="file-link" download>
+                            <span><i class="fa-solid fa-file-contract"></i> Grille_Qualitative_V2.pdf</span>
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                        <a href="assets/documents/protocole.pdf" class="file-link" download>
+                            <span><i class="fa-solid fa-file-shield"></i> Protocole_Test.pdf</span>
+                            <i class="fa-solid fa-download"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -235,10 +219,12 @@
                 <div class="folder-card type-projet" onclick="toggleFiles(this)">
                     <div class="folder-icon"><i class="fa-solid fa-flask"></i></div>
                     <div class="folder-title">Prototypes</div>
-                    <div class="folder-info">Maquettes & Tests</div>
+                    <div class="folder-info">Maquettes Figma / Images</div>
                     <div class="file-list">
-                        <div class="file-item"><i class="fa-brands fa-figma"></i> Maquettes_UI_Kit.fig</div>
-                        <div class="file-item"><i class="fa-solid fa-image"></i> Wireframes_V1.png</div>
+                        <a href="assets/images/maquette_v1.png" class="file-link" target="_blank">
+                            <span><i class="fa-solid fa-image"></i> Aperçu Wireframe V1</span>
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -248,8 +234,10 @@
     </main>
 
     <script>
-        // Petit script pour ouvrir/fermer les dossiers (Accordion simple)
         function toggleFiles(card) {
+            // Empêche le clic sur le lien de fermer le dossier
+            if (event.target.closest('a')) return;
+
             const list = card.querySelector('.file-list');
             if (list.style.display === 'block') {
                 list.style.display = 'none';
