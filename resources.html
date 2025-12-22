@@ -76,6 +76,9 @@
             transition: transform 0.2s;
             cursor: pointer;
             border: 1px solid transparent;
+            text-decoration: none; /* Pour les liens */
+            color: inherit;
+            display: block; /* Important pour les liens */
         }
         .folder-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 
@@ -92,9 +95,9 @@
         }
 
         .folder-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
-        .folder-info { font-size: 0.85rem; color: #888; }
+        .folder-info { font-size: 0.85rem; color: #888; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Liste de fichiers */
+        /* Liste de fichiers (Accordion) */
         .file-list { display: none; margin-top: 1rem; width: 100%; border-top: 1px solid #eee; padding-top: 10px; }
         
         /* Style des liens de téléchargement */
@@ -144,7 +147,7 @@
                 </p>
             </div>
             <!-- Lien vers le dépôt GitHub pour ajouter des fichiers -->
-            <a href="https://github.com" target="_blank" style="background: var(--bordeaux); color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+            <a href="https://github.com/Tyrulfr/Osez-Innover" target="_blank" style="background: var(--bordeaux); color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-brands fa-github"></i> Gérer mes fichiers
             </a>
         </div>
@@ -162,7 +165,6 @@
                     <div class="folder-title">Documents & Supports</div>
                     <div class="folder-info">Supports de cours PDF</div>
                     <div class="file-list">
-                        <!-- Exemple de lien réel : assets/documents/mon-fichier.pdf -->
                         <a href="assets/documents/module1.pdf" class="file-link" download>
                             <span><i class="fa-regular fa-file-pdf"></i> Module_1_Intro.pdf</span>
                             <i class="fa-solid fa-download"></i>
@@ -174,7 +176,7 @@
                     </div>
                 </div>
 
-                <!-- Dossier Vidéos (Liens externes recommandés) -->
+                <!-- Dossier Vidéos -->
                 <div class="folder-card type-formation" onclick="toggleFiles(this)">
                     <div class="folder-icon"><i class="fa-solid fa-circle-play"></i></div>
                     <div class="folder-title">Vidéos Learning</div>
@@ -197,21 +199,14 @@
             </h2>
             <div class="grid-container">
                 
-                <!-- Dossier Grilles d'entretien -->
-                <div class="folder-card type-projet" onclick="toggleFiles(this)">
+                <!-- >>> MODIFICATION ICI : LIEN VERS LA PAGE GRILLES.HTML <<< -->
+                <!-- Ce dossier n'ouvre plus une liste, mais redirige vers la page dédiée -->
+                <div class="folder-card type-projet" onclick="window.location.href='grilles.html'">
                     <div class="folder-icon"><i class="fa-solid fa-table-list"></i></div>
                     <div class="folder-title">Grilles d'Entretien</div>
-                    <div class="folder-info">Modèles à télécharger</div>
-                    <div class="file-list">
-                        <!-- Lien vers un fichier local -->
-                        <a href="assets/documents/grille_entretien.pdf" class="file-link" download>
-                            <span><i class="fa-solid fa-file-contract"></i> Grille_Qualitative_V2.pdf</span>
-                            <i class="fa-solid fa-download"></i>
-                        </a>
-                        <a href="assets/documents/protocole.pdf" class="file-link" download>
-                            <span><i class="fa-solid fa-file-shield"></i> Protocole_Test.pdf</span>
-                            <i class="fa-solid fa-download"></i>
-                        </a>
+                    <div class="folder-info">
+                        <span>Ouvrir le dossier complet</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
                     </div>
                 </div>
 
@@ -235,14 +230,18 @@
 
     <script>
         function toggleFiles(card) {
-            // Empêche le clic sur le lien de fermer le dossier
+            // Empêche le conflit si on clique sur un lien à l'intérieur
             if (event.target.closest('a')) return;
+            // Empêche l'ouverture si on clique sur une carte qui est un lien direct (comme grilles)
+            if (card.getAttribute('onclick').includes('location.href')) return;
 
             const list = card.querySelector('.file-list');
-            if (list.style.display === 'block') {
-                list.style.display = 'none';
-            } else {
-                list.style.display = 'block';
+            if (list) {
+                if (list.style.display === 'block') {
+                    list.style.display = 'none';
+                } else {
+                    list.style.display = 'block';
+                }
             }
         }
     </script>
