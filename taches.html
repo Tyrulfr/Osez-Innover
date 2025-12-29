@@ -92,9 +92,9 @@
         .task-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 
         /* Couleurs bordure selon priorité */
-        .border-urgent { border-left-color: #e74c3c; }
-        .border-review { border-left-color: var(--orange); }
-        .border-done { border-left-color: var(--teal); opacity: 0.7; }
+        .border-urgent { border-left-color: #e74c3c; } /* Rouge */
+        .border-review { border-left-color: var(--orange); } /* Orange */
+        .border-done { border-left-color: var(--teal); opacity: 0.8; } /* Vert */
 
         .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
         .task-title { font-weight: 700; font-size: 1.1rem; margin: 0; }
@@ -149,93 +149,111 @@
                 <small>Projet Inno / Gestion</small>
                 <h1>Tableau des Tâches</h1>
             </div>
-            <!-- Simulation ajout tâche (nécessiterait un POST API) -->
-            <button onclick="alert('Fonctionnalité : Créerait une nouvelle tâche dans Directus via API POST')" style="background: var(--bordeaux); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
+            <!-- Simulation ajout tâche -->
+            <button onclick="alert('Cette fonctionnalité nécessite un accès POST à l\'API.')" style="background: var(--bordeaux); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
                 <i class="fa-solid fa-plus"></i> Nouvelle Tâche
             </button>
         </div>
 
-        <!-- Filtres Visuels -->
+        <!-- Filtres Visuels (Statiques pour l'instant) -->
         <div class="filters">
             <button class="filter-btn active">Toutes</button>
             <button class="filter-btn">À Faire</button>
             <button class="filter-btn">Terminées</button>
         </div>
 
-        <!-- Zone Grille -->
+        <!-- Zone Grille Dynamique -->
         <div class="tasks-grid" id="board-container">
             <div class="loader">
-                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des données serveur...
+                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des données sécurisées...
             </div>
         </div>
 
     </main>
 
     <script>
-        // URL API SECURISEE (HTTPS)
+        // CONFIGURATION API (HTTPS via nip.io)
         const API_URL = 'https://212.47.247.119.nip.io';
 
         async function loadTaskBoard() {
             const container = document.getElementById('board-container');
             
             try {
+                // Appel API trié par date décroissante
                 const response = await fetch(`${API_URL}/items/taches?sort=-date_created`);
-                if (!response.ok) throw new Error("Erreur serveur");
+                
+                if (!response.ok) throw new Error("Erreur serveur : " + response.status);
                 
                 const json = await response.json();
                 const tasks = json.data;
 
-                container.innerHTML = ''; // Clear loader
+                container.innerHTML = ''; // Nettoyage du loader
 
-                if (tasks.length === 0) {
+                if (!tasks || tasks.length === 0) {
                     container.innerHTML = '<p>Aucune tâche trouvée.</p>';
                     return;
                 }
 
                 tasks.forEach(task => {
-                    // Logique de style selon les données
+                    // --- LOGIQUE METIER (Priority & Status) ---
                     let borderClass = '';
                     let badgeClass = 'badge-normal';
                     let icon = 'fa-circle-notch';
 
-                    if (task.priorite === 'Urgent' || task.priorite === 'Haute') {
+                    // Normalisation pour éviter les erreurs de casse
+                    const priorityLower = (task.priorite || '').toLowerCase();
+                    const statusLower = (task.status || '').toLowerCase();
+
+                    // 1. Gestion de la Priorité (Urgent/Haute/High)
+                    if (priorityLower.includes('urgent') || priorityLower.includes('haute') || priorityLower.includes('high')) {
                         borderClass = 'border-urgent';
                         badgeClass = 'badge-urgent';
-                        icon = 'fa-fire';
+                        icon = 'fa-fire'; // Icône feu pour urgence
                     }
-                    else if (task.status === 'Terminé' || task.status === 'published') {
+
+                    // 2. Gestion du Statut (Terminé/Done/Published)
+                    if (statusLower.includes('terminé') || statusLower.includes('done') || statusLower === 'published') {
                         borderClass = 'border-done';
                         badgeClass = 'badge-done';
                         icon = 'fa-check';
                     }
 
-                    // Formatage Date
-                    const date = new Date(task.date_created).toLocaleDateString('fr-FR');
+                    // 3. Formatage de la Date (FR)
+                    const dateObj = new Date(task.date_created);
+                    const dateFr = dateObj.toLocaleDateString('fr-FR', {
+                        day: '2-digit', month: '2-digit', year: 'numeric'
+                    });
 
-                    // Création HTML de la carte
+                    // Création de la carte HTML
                     const card = document.createElement('div');
                     card.className = `task-card ${borderClass}`;
+                    
                     card.innerHTML = `
                         <div class="task-header">
                             <h3 class="task-title">${task.titre}</h3>
                             <i class="fa-solid ${icon}" style="color: #ccc;"></i>
                         </div>
-                        <p class="task-desc">${task.description || 'Pas de description détaillée.'}</p>
+                        <p class="task-desc">${task.description || 'Aucune description.'}</p>
                         <div class="task-footer">
                             <span class="badge ${badgeClass}">${task.status}</span>
-                            <span class="date"><i class="fa-regular fa-clock"></i> ${date}</span>
+                            <span class="date"><i class="fa-regular fa-clock"></i> ${dateFr}</span>
                         </div>
                     `;
                     container.appendChild(card);
                 });
 
             } catch (error) {
-                console.error(error);
-                container.innerHTML = '<p style="color:red">Impossible de charger le tableau.</p>';
+                console.error("Erreur API:", error);
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: #e74c3c; background: #fff; padding: 20px; border-radius: 10px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 
+                        <strong>Erreur de chargement</strong><br>
+                        Impossible de récupérer les tâches depuis le serveur sécurisé.
+                    </div>`;
             }
         }
 
-        // Lancer au chargement
+        // Lancement au chargement de la page
         loadTaskBoard();
     </script>
 
