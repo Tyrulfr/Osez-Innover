@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MES TÂCHES | Projet Inno</title>
+    
+    <!-- Polices & Icônes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- DESIGN SYSTEM (COPIE DU DASHBOARD) --- */
+        :root {
+            --bordeaux: #580F45; 
+            --orange: #F48C2E;
+            --teal: #2EAF7D;
+            --blue: #2A325E;
+            --bg-body: #F0F2F5;
+            --bg-card: #FFFFFF;
+            --text-main: #2A325E;
+            --text-muted: #8898aa;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bordeaux);
+            color: white;
+            position: fixed;
+            height: 100%;
+            left: 0; top: 0;
+            display: flex; flex-direction: column;
+            z-index: 100;
+        }
+        .sidebar-header { padding: 2rem 1.5rem; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-links { list-style: none; padding: 0; margin: 2rem 0; }
+        .nav-link { display: flex; align-items: center; padding: 1rem 1.5rem; color: rgba(255,255,255,0.8); text-decoration: none; transition: 0.3s; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: white; border-left: 4px solid var(--orange); }
+        .nav-link i { width: 30px; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 2rem;
+        }
+
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        h1 { font-family: 'Montserrat', sans-serif; margin: 0; color: var(--bordeaux); }
+
+        /* --- TASK BOARD --- */
+        .filters {
+            margin-bottom: 2rem;
+            display: flex; gap: 10px;
+        }
+        .filter-btn {
+            background: white; border: 1px solid #ddd; padding: 8px 20px;
+            border-radius: 20px; cursor: pointer; font-weight: 600; color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--bordeaux); color: white; border-color: var(--bordeaux);
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .task-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--blue); /* Couleur par défaut */
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .task-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+        /* Couleurs bordure selon priorité */
+        .border-urgent { border-left-color: #e74c3c; }
+        .border-review { border-left-color: var(--orange); }
+        .border-done { border-left-color: var(--teal); opacity: 0.7; }
+
+        .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .task-title { font-weight: 700; font-size: 1.1rem; margin: 0; }
+        .task-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; }
+        
+        .task-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;
+        }
+
+        .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+        .badge-urgent { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+        .badge-normal { background: rgba(42, 50, 94, 0.1); color: var(--blue); }
+        .badge-done { background: rgba(46, 175, 125, 0.1); color: var(--teal); }
+
+        .date { font-size: 0.8rem; color: #aaa; }
+
+        /* Loader */
+        .loader { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 1.2rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar-header span, .nav-link span { display: none; }
+            .main-content { margin-left: 60px; width: calc(100% - 60px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-atom" style="color: var(--orange);"></i>
+            <span>&nbsp; MANAGER</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> <span>Vue d'ensemble</span></a></li>
+            <li><a href="taches.html" class="nav-link active"><i class="fa-solid fa-list-check"></i> <span>Mes Tâches</span></a></li>
+            <li><a href="resources.html" class="nav-link"><i class="fa-solid fa-box-open"></i> <span>Ressources</span></a></li>
+            <li><a class="nav-link"><i class="fa-solid fa-users"></i> <span>Apprenants</span></a></li>
+            <li style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1);">
+                <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> <span>Retour Accueil</span></a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="main-content">
+        <div class="header-bar">
+            <div>
+                <small>Projet Inno / Gestion</small>
+                <h1>Tableau des Tâches</h1>
+            </div>
+            <!-- Simulation ajout tâche (nécessiterait un POST API) -->
+            <button onclick="alert('Fonctionnalité : Créerait une nouvelle tâche dans Directus via API POST')" style="background: var(--bordeaux); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold;">
+                <i class="fa-solid fa-plus"></i> Nouvelle Tâche
+            </button>
+        </div>
+
+        <!-- Filtres Visuels -->
+        <div class="filters">
+            <button class="filter-btn active">Toutes</button>
+            <button class="filter-btn">À Faire</button>
+            <button class="filter-btn">Terminées</button>
+        </div>
+
+        <!-- Zone Grille -->
+        <div class="tasks-grid" id="board-container">
+            <div class="loader">
+                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des données serveur...
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // URL API SECURISEE (HTTPS)
+        const API_URL = 'https://212.47.247.119.nip.io';
+
+        async function loadTaskBoard() {
+            const container = document.getElementById('board-container');
+            
+            try {
+                const response = await fetch(`${API_URL}/items/taches?sort=-date_created`);
+                if (!response.ok) throw new Error("Erreur serveur");
+                
+                const json = await response.json();
+                const tasks = json.data;
+
+                container.innerHTML = ''; // Clear loader
+
+                if (tasks.length === 0) {
+                    container.innerHTML = '<p>Aucune tâche trouvée.</p>';
+                    return;
+                }
+
+                tasks.forEach(task => {
+                    // Logique de style selon les données
+                    let borderClass = '';
+                    let badgeClass = 'badge-normal';
+                    let icon = 'fa-circle-notch';
+
+                    if (task.priorite === 'Urgent' || task.priorite === 'Haute') {
+                        borderClass = 'border-urgent';
+                        badgeClass = 'badge-urgent';
+                        icon = 'fa-fire';
+                    }
+                    else if (task.status === 'Terminé' || task.status === 'published') {
+                        borderClass = 'border-done';
+                        badgeClass = 'badge-done';
+                        icon = 'fa-check';
+                    }
+
+                    // Formatage Date
+                    const date = new Date(task.date_created).toLocaleDateString('fr-FR');
+
+                    // Création HTML de la carte
+                    const card = document.createElement('div');
+                    card.className = `task-card ${borderClass}`;
+                    card.innerHTML = `
+                        <div class="task-header">
+                            <h3 class="task-title">${task.titre}</h3>
+                            <i class="fa-solid ${icon}" style="color: #ccc;"></i>
+                        </div>
+                        <p class="task-desc">${task.description || 'Pas de description détaillée.'}</p>
+                        <div class="task-footer">
+                            <span class="badge ${badgeClass}">${task.status}</span>
+                            <span class="date"><i class="fa-regular fa-clock"></i> ${date}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p style="color:red">Impossible de charger le tableau.</p>';
+            }
+        }
+
+        // Lancer au chargement
+        loadTaskBoard();
+    </script>
+
+</body>
+</html>
