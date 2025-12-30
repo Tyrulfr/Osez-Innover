@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 : Fondations | Projet Inno</title>
+    
+    <!-- Polices & Icônes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- DESIGN TOKENS --- */
+        :root {
+            --bordeaux: #580F45; 
+            --orange: #F48C2E;
+            --teal: #2EAF7D;
+            --blue: #2A325E;
+            --bg-page: #F0F2F5;
+            --text-main: #2A325E;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            background-image: radial-gradient(rgba(88, 15, 69, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .module-header {
+            background: linear-gradient(135deg, var(--bordeaux), #2c0824);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        .back-link {
+            position: absolute; top: 20px; left: 20px;
+            color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .back-link:hover { color: white; transform: translateX(-5px); }
+
+        .module-tag {
+            background: var(--orange); color: white; 
+            padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.8rem;
+            text-transform: uppercase; display: inline-block; margin-bottom: 1rem;
+        }
+
+        h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; margin: 0 0 1rem 0; }
+        .subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* --- SECTIONS GRID --- */
+        .container {
+            max-width: 1000px; margin: -50px auto 3rem auto; padding: 0 1rem;
+            position: relative; z-index: 5;
+        }
+
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-top: 5px solid transparent;
+            display: flex; flex-direction: column; height: 100%;
+            text-decoration: none; color: inherit;
+        }
+
+        .section-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        /* Styles spécifiques par carte */
+        .card-innovation { border-color: var(--bordeaux); }
+        .card-innovation .icon-circle { background: rgba(88, 15, 69, 0.1); color: var(--bordeaux); }
+
+        .card-vocabulaire { border-color: var(--teal); }
+        .card-vocabulaire .icon-circle { background: rgba(46, 175, 125, 0.1); color: var(--teal); }
+
+        .card-familles { border-color: var(--blue); }
+        .card-familles .icon-circle { background: rgba(42, 50, 94, 0.1); color: var(--blue); }
+
+        /* Contenu Carte */
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .icon-circle {
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; transition: 0.3s;
+        }
+        .section-card:hover .icon-circle { transform: scale(1.1) rotate(5deg); }
+
+        .card-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 3rem; opacity: 0.05; position: absolute; top: 10px; right: 20px; }
+
+        h2 { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; margin: 0 0 10px 0; }
+        p { color: #666; font-size: 0.95rem; line-height: 1.5; flex: 1; }
+
+        .card-footer {
+            margin-top: 1.5rem; border-top: 1px solid #eee; padding-top: 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .status-badge {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 4px;
+        }
+        .status-active { background: #e8f5e9; color: var(--teal); }
+        .status-locked { background: #f5f5f5; color: #999; display: flex; align-items: center; gap: 5px; }
+
+        .action-icon {
+            width: 35px; height: 35px; border-radius: 50%; background: var(--bg-page);
+            display: flex; align-items: center; justify-content: center; color: var(--text-main);
+            transition: 0.3s;
+        }
+        .section-card:hover .action-icon { background: var(--orange); color: white; }
+
+        /* Barre de progression interne */
+        .progress-mini { width: 100px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; background: var(--teal); border-radius: 3px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .module-header { padding: 2rem 1rem 4rem 1rem; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="module-header">
+        <a href="plateforme_apprenant.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Tableau de bord
+        </a>
+        <div class="header-content">
+            <span class="module-tag">Module 1</span>
+            <h1>Fondations & Outils</h1>
+            <p class="subtitle">Maîtrisez les concepts clés pour comprendre ce qui distingue une simple idée d'une véritable innovation de rupture.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sections-grid">
+            
+            <!-- SECTION 1 : INNOVATION (Lien vers la mosaïque) -->
+            <a href="module1_vocabulaire.html" class="section-card card-innovation">
+                <span class="card-num">01</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-lightbulb"></i></div>
+                </div>
+                <h2>Innovation & Concepts</h2>
+                <p>La base fondamentale. Comprendre la distinction cruciale entre Innovation, Invention, Découverte et Créativité.</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="status-badge status-active">Disponible</span>
+                        <!-- Exemple de progression (statique pour l'instant) -->
+                        <div class="progress-mini"><div class="progress-fill" style="width: 0%;"></div></div>
+                    </div>
+                    <div class="action-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- SECTION 2 : VOCABULAIRES -->
+            <div class="section-card card-vocabulaire" onclick="alert('Le dictionnaire interactif (Start-up, Deep Tech, MVP...) est en cours de développement.')">
+                <span class="card-num">02</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-book-open"></i></div>
+                </div>
+                <h2>Vocabulaires</h2>
+                <p>Parlez le langage des pros. Startup, Deep Tech, MVP, Licorne... Décryptez le jargon de l'écosystème.</p>
+                <div class="card-footer">
+                    <span class="status-badge status-locked"><i class="fa-solid fa-lock"></i> À venir</span>
+                    <div class="action-icon" style="opacity: 0.5;"><i class="fa-solid fa-lock"></i></div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 : FAMILLES -->
+            <div class="section-card card-familles" onclick="alert('La section sur les Typologies (Incrémentale, Rupture...) arrive bientôt.')">
+                <span class="card-num">03</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-layer-group"></i></div>
+                </div>
+                <h2>Familles d'Innovation</h2>
+                <p>Toutes les innovations ne se valent pas. Explorez les typologies : Incrémentale, de Rupture, Adjacente et Radicale.</p>
+                <div class="card-footer">
+                    <span class="status-badge status-locked"><i class="fa-solid fa-lock"></i> À venir</span>
+                    <div class="action-icon" style="opacity: 0.5;"><i class="fa-solid fa-lock"></i></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
