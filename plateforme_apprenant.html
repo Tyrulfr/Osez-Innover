@@ -17,6 +17,7 @@
             --orange: #F48C2E;
             --teal: #2EAF7D;
             --blue: #2A325E;
+            --yellow: #f1c40f; /* Ajout pour "En construction" */
             
             --bg-page: #F0F2F5;
             --bg-card: #FFFFFF;
@@ -121,29 +122,26 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        /* Module Actif */
-        .module-active {
+        /* Module Standard (Actif) */
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        /* Style spécifique pour le module courant/principal */
+        .module-featured {
             border-color: var(--orange);
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(244, 140, 46, 0.2);
+            box-shadow: 0 15px 40px rgba(244, 140, 46, 0.15);
         }
-        .module-active .module-number { background: var(--orange); }
+        .module-featured .module-number { background: var(--orange); }
 
-        /* Module Verrouillé */
-        .module-locked { opacity: 0.8; filter: grayscale(1); }
-        .module-locked:hover { transform: none; cursor: not-allowed; }
-        
-        .lock-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.5); z-index: 5; border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s;
+        /* Style pour les modules en construction */
+        .module-wip {
+            border-left: 5px solid var(--yellow);
         }
-        [data-theme="dark"] .lock-overlay { background: rgba(0,0,0,0.5); }
+        .module-wip .module-number { background: var(--text-light); opacity: 0.8; }
         
-        .module-locked:hover .lock-overlay { opacity: 1; }
-        .lock-icon { font-size: 3rem; color: var(--text-main); background: var(--bg-card); padding: 20px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
         /* Contenu Carte */
         .module-number {
             font-size: 1.5rem; font-weight: 900; color: white;
@@ -156,10 +154,17 @@
         .module-title { font-size: 1.4rem; margin: 0 0 0.5rem 0; font-weight: 800; }
         .module-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; }
         
-        .tags { display: flex; gap: 10px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+        .tags { display: flex; gap: 10px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; flex-wrap: wrap; }
         .tag { padding: 4px 10px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-light); }
         .tag-cat { color: var(--bordeaux); background: rgba(88, 15, 69, 0.1); }
         .tag-xp { color: var(--teal); background: rgba(46, 175, 125, 0.1); }
+        
+        /* Badge Construction */
+        .tag-wip { 
+            color: #d35400; 
+            background: #fce5cd; 
+            display: flex; align-items: center; gap: 5px;
+        }
 
         .btn-start {
             background: var(--bordeaux); color: white; border: none;
@@ -168,6 +173,12 @@
             font-size: 0.9rem;
         }
         .btn-start:hover { background: var(--orange); }
+        
+        /* Bouton "En travaux" */
+        .btn-wip {
+            background: transparent; color: var(--text-light); border: 2px solid #ddd;
+        }
+        .btn-wip:hover { background: #eee; color: var(--text-main); border-color: #ccc; }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
@@ -187,12 +198,12 @@
         <div class="player-info">
             <div class="avatar">J</div>
             <div class="level-info">
-                <span class="level-title">Niveau 0 : Initié</span>
+                <span class="level-title">Niveau 1 : Explorateur</span>
                 <div class="xp-container" title="0/1000 XP">
-                    <div class="xp-bar" style="width: 5%;"></div>
+                    <div class="xp-bar" style="width: 15%;"></div>
                 </div>
             </div>
-            <div style="font-weight:bold; color:var(--orange); font-size:0.9rem;">50 XP</div>
+            <div style="font-weight:bold; color:var(--orange); font-size:0.9rem;">150 XP</div>
         </div>
 
         <div class="hud-actions">
@@ -207,25 +218,8 @@
 
         <div class="mission-map">
             
-            <!-- MODULE 0 -->
-            <div class="module-card module-active" onclick="startModule(0)">
-                <div class="module-number">M0</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Découvrir</span>
-                        <span class="tag tag-xp">+100 XP</span>
-                    </div>
-                    <h2 class="module-title">L’innovation comme méthode</h2>
-                    <p class="module-desc">Démystification de l'innovation. Pourquoi ce n'est pas de la magie, mais un processus structuré.</p>
-                    <button class="btn-start">
-                        <i class="fa-solid fa-play"></i> Commencer
-                    </button>
-                </div>
-            </div>
-
-            <!-- MODULE 1 -->
-            <div class="module-card module-locked" onclick="alertLocked(1)">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
+            <!-- MODULE 1 (Le nouveau départ) -->
+            <div class="module-card module-featured" onclick="startModule(1)">
                 <div class="module-number">M1</div>
                 <div class="module-content">
                     <div class="tags">
@@ -234,76 +228,89 @@
                     </div>
                     <h2 class="module-title">Vocabulaire & Typologie</h2>
                     <p class="module-desc">Innovation de rupture, incrémentale, adjacente... Maîtrisez le langage des innovateurs.</p>
+                    <button class="btn-start">
+                        <i class="fa-solid fa-play"></i> Accéder au module
+                    </button>
                 </div>
             </div>
 
             <!-- MODULE 2 -->
-            <div class="module-card module-locked" onclick="alertLocked(2)">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
+            <div class="module-card module-wip" onclick="startModule(2)">
                 <div class="module-number">M2</div>
                 <div class="module-content">
                     <div class="tags">
                         <span class="tag tag-cat">Détecter</span>
-                        <span class="tag tag-xp">+200 XP</span>
+                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
                     </div>
                     <h2 class="module-title">Identifier le potentiel</h2>
                     <p class="module-desc">Comment repérer une opportunité et évaluer si une idée mérite d'être développée.</p>
+                    <button class="btn-start btn-wip">
+                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
+                    </button>
                 </div>
             </div>
 
             <!-- MODULE 3 -->
-            <div class="module-card module-locked" onclick="alertLocked(3)">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
+            <div class="module-card module-wip" onclick="startModule(3)">
                 <div class="module-number">M3</div>
                 <div class="module-content">
                     <div class="tags">
                         <span class="tag tag-cat">Protéger</span>
-                        <span class="tag tag-xp">+250 XP</span>
+                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
                     </div>
                     <h2 class="module-title">Présenter, PI & Contrats</h2>
                     <p class="module-desc">Savoir pitcher son projet et comprendre les bases de la Propriété Intellectuelle (PI).</p>
+                    <button class="btn-start btn-wip">
+                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
+                    </button>
                 </div>
             </div>
 
             <!-- MODULE 4 -->
-            <div class="module-card module-locked" onclick="alertLocked(4)">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
+            <div class="module-card module-wip" onclick="startModule(4)">
                 <div class="module-number">M4</div>
                 <div class="module-content">
                     <div class="tags">
                         <span class="tag tag-cat">Connecter</span>
-                        <span class="tag tag-xp">+300 XP</span>
+                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
                     </div>
                     <h2 class="module-title">Écosystèmes Clés</h2>
                     <p class="module-desc">Cartographie des acteurs de l'innovation et comment interagir avec eux.</p>
+                    <button class="btn-start btn-wip">
+                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
+                    </button>
                 </div>
             </div>
 
             <!-- MODULE 5 -->
-            <div class="module-card module-locked" onclick="alertLocked(5)">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
+            <div class="module-card module-wip" onclick="startModule(5)">
                 <div class="module-number">M5</div>
                 <div class="module-content">
                     <div class="tags">
                         <span class="tag tag-cat">Collaborer</span>
-                        <span class="tag tag-xp">+350 XP</span>
+                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
                     </div>
                     <h2 class="module-title">Coopérer en Projet</h2>
                     <p class="module-desc">Méthodes agiles et postures pour travailler efficacement en équipe innovante.</p>
+                    <button class="btn-start btn-wip">
+                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
+                    </button>
                 </div>
             </div>
 
             <!-- MODULE 6 (FINAL) -->
-            <div class="module-card module-locked" onclick="alertLocked(6)" style="border: 2px solid var(--bordeaux);">
-                <div class="lock-overlay"><i class="fa-solid fa-lock lock-icon"></i></div>
-                <div class="module-number" style="background: var(--orange);">M6</div>
+            <div class="module-card module-wip" onclick="startModule(6)">
+                <div class="module-number">M6</div>
                 <div class="module-content">
                     <div class="tags">
                         <span class="tag tag-cat">S'évaluer</span>
-                        <span class="tag tag-xp" style="color:var(--orange);">+500 XP</span>
+                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
                     </div>
                     <h2 class="module-title">Évaluation & Potentiel</h2>
                     <p class="module-desc">Bilan global des compétences et déblocage de votre parcours personnalisé.</p>
+                    <button class="btn-start btn-wip">
+                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
+                    </button>
                 </div>
             </div>
 
@@ -335,25 +342,28 @@
         // Appliquer le thème sauvegardé au chargement
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
-            toggleTheme(); // Applique si nécessaire (par défaut c'est light)
-            if(savedTheme === 'light') toggleTheme(); // Petite astuce pour reset l'icone si besoin
+            toggleTheme();
+            if(savedTheme === 'light') toggleTheme();
         }
 
         // 2. Logique de Navigation Modules
         function startModule(id) {
-            // Ici, vous redirigerez vers la page spécifique du module plus tard
-            // Ex: window.location.href = `modules/m${id}.html`;
-            
             const titles = [
-                "L'innovation comme méthode", "Vocabulaire", "Identifier", 
-                "Protéger", "Connecter", "Collaborer", "Évaluation"
+                "", // M0 n'existe plus
+                "Vocabulaire & Typologie", 
+                "Identifier le potentiel", 
+                "Présenter, PI & Contrats", 
+                "Écosystèmes Clés", 
+                "Coopérer en Projet", 
+                "Évaluation & Potentiel"
             ];
             
-            alert(`Lancement du Module ${id} : ${titles[id]}\n\n(Dans la version finale, cela ouvrira le contenu pédagogique.)`);
-        }
-
-        function alertLocked(id) {
-            alert(`🔒 Le Module M${id} est verrouillé !\n\nTerminez les modules précédents pour débloquer cette étape.`);
+            if (id === 1) {
+                 alert(`Lancement du Module ${id} : ${titles[id]}\n\n(Ce module est prêt.)`);
+                 // window.location.href = `modules/m${id}.html`;
+            } else {
+                 alert(`🚧 Module ${id} : ${titles[id]}\n\nCe contenu est actuellement en cours de construction.`);
+            }
         }
     </script>
 </body>
