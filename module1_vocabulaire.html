@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M1 : VOCABULAIRE | Projet Inno</title>
+    
+    <!-- Polices & Icônes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- DESIGN TOKENS --- */
+        :root {
+            --bordeaux: #580F45; 
+            --orange: #F48C2E;
+            --teal: #2EAF7D;
+            --blue: #2A325E;
+            --yellow: #f1c40f;
+            --bg-page: #F0F2F5;
+            --text-main: #2A325E;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            /* Petit pattern de fond */
+            background-image: radial-gradient(rgba(88, 15, 69, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        h1, h2 { font-family: 'Montserrat', sans-serif; }
+
+        /* --- HUD (Barre de navigation) --- */
+        .top-bar {
+            background: white; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn {
+            text-decoration: none; font-weight: 700; color: var(--text-main);
+            display: flex; align-items: center; gap: 10px; transition: color 0.3s;
+        }
+        .back-btn:hover { color: var(--orange); }
+        
+        .progress-indicator {
+            font-size: 0.9rem; font-weight: 700; color: var(--teal);
+            background: rgba(46, 175, 125, 0.1); padding: 5px 15px; border-radius: 20px;
+        }
+
+        /* --- CONTENU PRINCIPAL --- */
+        .container {
+            max-width: 1100px; margin: 0 auto; padding: 3rem 1rem;
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .intro-text {
+            text-align: center; max-width: 700px; margin-bottom: 3rem;
+        }
+        .intro-text h1 { color: var(--bordeaux); font-size: 2.5rem; margin-bottom: 1rem; }
+        .intro-text p { font-size: 1.1rem; color: #666; }
+
+        /* --- MOSAÏQUE GRILLE --- */
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            perspective: 1000px; /* Essentiel pour l'effet 3D */
+        }
+
+        /* --- CARTE FLIP (Le Cube) --- */
+        .flip-card {
+            background-color: transparent;
+            height: 250px;
+            cursor: pointer;
+        }
+
+        /* Conteneur interne qui fait la rotation */
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Interaction au survol (Desktop) ou clic (Mobile via JS) */
+        .flip-card:hover .flip-card-inner, .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Face AVANT et ARRIÈRE communes */
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 2rem;
+        }
+
+        /* --- DESIGN FACE AVANT --- */
+        .flip-card-front {
+            background-color: white;
+            color: var(--text-main);
+            border-bottom: 5px solid transparent; /* Couleur définie plus bas */
+        }
+
+        .icon-box {
+            font-size: 3.5rem; margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .card-title {
+            font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .tap-hint {
+            margin-top: 1rem; font-size: 0.8rem; opacity: 0.6; font-weight: 600;
+        }
+
+        /* --- DESIGN FACE ARRIÈRE --- */
+        .flip-card-back {
+            color: white;
+            transform: rotateY(180deg);
+            text-align: left;
+            align-items: flex-start; /* Texte aligné à gauche pour la lecture */
+        }
+
+        .flip-card-back h3 { margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 5px; width: 100%; }
+        .flip-card-back p { font-size: 0.95rem; line-height: 1.5; }
+
+        /* --- COULEURS SPÉCIFIQUES PAR CARTE --- */
+        
+        /* 1. INNOVATION (Bordeaux) */
+        .card-innovation .flip-card-front { border-color: var(--bordeaux); }
+        .card-innovation .icon-box { color: var(--bordeaux); }
+        .card-innovation .flip-card-back { background: var(--bordeaux); }
+
+        /* 2. INVENTION (Orange) */
+        .card-invention .flip-card-front { border-color: var(--orange); }
+        .card-invention .icon-box { color: var(--orange); }
+        .card-invention .flip-card-back { background: var(--orange); }
+
+        /* 3. DÉCOUVERTE (Teal) */
+        .card-decouverte .flip-card-front { border-color: var(--teal); }
+        .card-decouverte .icon-box { color: var(--teal); }
+        .card-decouverte .flip-card-back { background: var(--teal); }
+
+        /* 4. IDÉES (Bleu) */
+        .card-idees .flip-card-front { border-color: var(--blue); }
+        .card-idees .icon-box { color: var(--blue); }
+        .card-idees .flip-card-back { background: var(--blue); }
+
+        /* 5. CRÉATIVITÉ (Jaune/Or) */
+        .card-creativite .flip-card-front { border-color: #f39c12; }
+        .card-creativite .icon-box { color: #f39c12; }
+        .card-creativite .flip-card-back { background: #f39c12; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+
+
+        /* --- BOUTON FINAL --- */
+        .finish-btn {
+            margin-top: 3rem;
+            background: var(--text-main); color: white;
+            padding: 1rem 3rem; border-radius: 50px; border: none;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            opacity: 0.5; pointer-events: none; /* Désactivé au début */
+            transition: all 0.3s;
+        }
+        .finish-btn.active {
+            opacity: 1; pointer-events: all; background: var(--teal);
+            transform: scale(1.05); box-shadow: 0 10px 20px rgba(46, 175, 125, 0.3);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .mosaic-grid { grid-template-columns: 1fr; }
+            .flip-card { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barre de Navigation -->
+    <div class="top-bar">
+        <a href="plateforme_apprenant.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Retour au Parcours
+        </a>
+        <div class="progress-indicator" id="progressText">
+            0/5 Cartes découvertes
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="intro-text">
+            <h1>Les Fondations</h1>
+            <p>Passez votre souris (ou touchez) les cartes pour révéler les définitions essentielles. Maîtriser ces nuances est la première étape de l'innovateur.</p>
+        </div>
+
+        <div class="mosaic-grid">
+
+            <!-- CARTE 1 : INNOVATION -->
+            <div class="flip-card card-innovation" onclick="revealCard(this)">
+                <div class="flip-card-inner">
+                    <!-- FACE AVANT -->
+                    <div class="flip-card-front">
+                        <div class="icon-box"><i class="fa-solid fa-lightbulb"></i></div>
+                        <h2 class="card-title">Innovation</h2>
+                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
+                    </div>
+                    <!-- FACE ARRIÈRE -->
+                    <div class="flip-card-back">
+                        <h3><i class="fa-solid fa-rocket"></i> Création de Valeur</h3>
+                        <p>C'est l'application réussie d'idées nouvelles. Contrairement à la simple invention, l'innovation doit rencontrer son marché et créer de la valeur (économique, sociale ou d'usage).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTE 2 : INVENTION -->
+            <div class="flip-card card-invention" onclick="revealCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="icon-box"><i class="fa-solid fa-flask"></i></div>
+                        <h2 class="card-title">Invention</h2>
+                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3><i class="fa-solid fa-fingerprint"></i> Nouveauté Pure</h3>
+                        <p>Création d'un concept ou d'une technique entièrement nouvelle qui n'existait pas auparavant. Elle n'a pas nécessairement d'application commerciale immédiate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTE 3 : DÉCOUVERTE -->
+            <div class="flip-card card-decouverte" onclick="revealCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="icon-box"><i class="fa-solid fa-eye"></i></div>
+                        <h2 class="card-title">Découverte</h2>
+                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3><i class="fa-solid fa-magnifying-glass"></i> Révéler l'Existant</h3>
+                        <p>Mise au jour de faits ou de connaissances qui existaient déjà (lois physiques, éléments chimiques) mais qui étaient inconnus. Ce n'est pas une création, c'est une révélation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTE 4 : IDÉES -->
+            <div class="flip-card card-idees" onclick="revealCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+                        <h2 class="card-title">Idées</h2>
+                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3><i class="fa-regular fa-lightbulb"></i> L'Étincelle</h3>
+                        <p>Le point de départ abstrait. Une idée est une représentation mentale. Sans exécution, une idée n'est ni une invention, ni une innovation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARTE 5 : CRÉATIVITÉ -->
+            <div class="flip-card card-creativite" onclick="revealCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="icon-box"><i class="fa-solid fa-palette"></i></div>
+                        <h2 class="card-title">Créativité</h2>
+                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3><i class="fa-solid fa-brain"></i> Le Moteur</h3>
+                        <p>La capacité à générer des idées nouvelles et originales. C'est le carburant mental qui permet d'aboutir à l'invention.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="finishBtn" class="finish-btn" onclick="finishLevel()">
+            Valider le Module (+150 XP) <i class="fa-solid fa-check-circle"></i>
+        </button>
+
+    </div>
+
+    <script>
+        let revealedCount = 0;
+        const totalCards = 5;
+        const finishBtn = document.getElementById('finishBtn');
+        const progressText = document.getElementById('progressText');
+
+        function revealCard(card) {
+            // Ajouter la classe pour retourner la carte (utile sur mobile pour garder l'état)
+            card.classList.toggle('flipped');
+
+            // Compter les cartes découvertes (une seule fois par carte)
+            if (!card.hasAttribute('data-read')) {
+                card.setAttribute('data-read', 'true');
+                revealedCount++;
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            progressText.innerText = `${revealedCount}/${totalCards} Cartes découvertes`;
+            
+            // Si toutes les cartes sont lues, activer le bouton final
+            if (revealedCount === totalCards) {
+                finishBtn.classList.add('active');
+            }
+        }
+
+        function finishLevel() {
+            alert("Félicitations ! Vous avez acquis le vocabulaire fondamental.\n\n+150 XP ajoutés à votre profil !");
+            // Redirection vers le parcours
+            window.location.href = 'plateforme_apprenant.html';
+        }
+    </script>
+
+</body>
+</html>
