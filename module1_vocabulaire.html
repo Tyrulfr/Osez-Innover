@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M1 : VOCABULAIRE | Projet Inno</title>
-    
+    <title>M1 : CONCEPTS CLÉS | Projet Inno</title>
+
     <!-- Polices & Icônes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- DESIGN TOKENS --- */
         :root {
-            --bordeaux: #580F45; 
+            --bordeaux: #580F45;
             --orange: #F48C2E;
             --teal: #2EAF7D;
             --blue: #2A325E;
-            --yellow: #f1c40f;
             --bg-page: #F0F2F5;
+            --bg-card: #FFFFFF;
             --text-main: #2A325E;
+            --highlight: rgba(244, 140, 46, 0.1);
         }
 
         body {
@@ -27,288 +27,323 @@
             font-family: 'Open Sans', sans-serif;
             background-color: var(--bg-page);
             color: var(--text-main);
-            /* Petit pattern de fond */
-            background-image: radial-gradient(rgba(88, 15, 69, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(42, 50, 94, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-            display: flex; flex-direction: column; min-height: 100vh;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
         }
 
-        h1, h2 { font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
 
-        /* --- HUD (Barre de navigation) --- */
-        .top-bar {
+        /* --- NAVIGATION --- */
+        .top-nav {
             background: white; padding: 1rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky; top: 0; z-index: 100;
         }
-        .back-btn {
-            text-decoration: none; font-weight: 700; color: var(--text-main);
-            display: flex; align-items: center; gap: 10px; transition: color 0.3s;
+        .back-link {
+            text-decoration: none; color: var(--text-main); font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
         }
-        .back-btn:hover { color: var(--orange); }
-        
-        .progress-indicator {
-            font-size: 0.9rem; font-weight: 700; color: var(--teal);
-            background: rgba(46, 175, 125, 0.1); padding: 5px 15px; border-radius: 20px;
-        }
+        .back-link:hover { color: var(--orange); transform: translateX(-5px); }
 
-        /* --- CONTENU PRINCIPAL --- */
-        .container {
-            max-width: 1100px; margin: 0 auto; padding: 3rem 1rem;
-            flex: 1; display: flex; flex-direction: column; align-items: center;
+        .xp-display {
+            display: flex; align-items: center; gap: 10px; margin-left: auto;
         }
-
-        .intro-text {
-            text-align: center; max-width: 700px; margin-bottom: 3rem;
+        .xp-bar-bg {
+            width: 150px; height: 8px; background: #eee; border-radius: 4px; overflow: hidden;
         }
-        .intro-text h1 { color: var(--bordeaux); font-size: 2.5rem; margin-bottom: 1rem; }
-        .intro-text p { font-size: 1.1rem; color: #666; }
-
-        /* --- MOSAÏQUE GRILLE --- */
-        .mosaic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            width: 100%;
-            perspective: 1000px; /* Essentiel pour l'effet 3D */
+        .xp-bar-fill {
+            height: 100%; background: var(--teal); width: 0%; transition: width 0.3s;
+        }
+        #progressText {
+            font-size: 0.9rem; font-weight: 600; color: var(--teal);
         }
 
-        /* --- CARTE FLIP (Le Cube) --- */
-        .flip-card {
-            background-color: transparent;
-            height: 250px;
-            cursor: pointer;
+        /* --- EN-TÊTE --- */
+        .page-header {
+            text-align: center; padding: 2rem 1rem; max-width: 800px; margin: 0 auto;
+        }
+        .page-header h1 {
+            font-size: 2.2rem; color: var(--bordeaux); margin-bottom: 0.5rem;
+        }
+        .page-header p {
+            font-size: 1.1rem; color: #666; line-height: 1.6;
         }
 
-        /* Conteneur interne qui fait la rotation */
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        /* --- LISTE DES CONCEPTS --- */
+        .concepts-list {
+            display: flex; flex-direction: column; gap: 1.5rem;
+            max-width: 900px; margin: 0 auto 3rem; padding: 0 1rem;
         }
 
-        /* Interaction au survol (Desktop) ou clic (Mobile via JS) */
-        .flip-card:hover .flip-card-inner, .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
+        .concept-card {
+            background: white; border-radius: 15px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;
+            cursor: pointer; border: 1px solid #eee;
+        }
+        .concept-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: translateY(-3px);
+        }
+        .concept-card[data-read="true"] {
+            border-color: var(--teal);
         }
 
-        /* Face AVANT et ARRIÈRE communes */
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            padding: 2rem;
+        .concept-header {
+            padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
+        }
+        .concept-icon {
+            width: 50px; height: 50px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: white; flex-shrink: 0;
+        }
+        .icon-innovation { background: var(--bordeaux); }
+        .icon-invention { background: var(--blue); }
+        .icon-creativite { background: var(--teal); }
+        .icon-idee { background: var(--orange); }
+        .icon-startup { background: #9b59b6; }
+
+        .concept-title {
+            font-size: 1.3rem; font-weight: 700; color: var(--text-main);
+            flex: 1;
+        }
+        .toggle-icon {
+            font-size: 1.2rem; color: #666; transition: transform 0.3s;
+        }
+        .concept-card[data-expanded="true"] .toggle-icon {
+            transform: rotate(180deg);
         }
 
-        /* --- DESIGN FACE AVANT --- */
-        .flip-card-front {
-            background-color: white;
-            color: var(--text-main);
-            border-bottom: 5px solid transparent; /* Couleur définie plus bas */
+        .concept-content {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+            background: var(--highlight);
+        }
+        .concept-card[data-expanded="true"] .concept-content {
+            max-height: 1000px; /* Valeur arbitraire pour l'animation */
+        }
+        .content-inner {
+            padding: 1.5rem;
         }
 
-        .icon-box {
-            font-size: 3.5rem; margin-bottom: 1rem;
-            opacity: 0.9;
+        .concept-explanation {
+            margin-bottom: 1.5rem; line-height: 1.6;
+        }
+        .concept-explanation h4 {
+            color: var(--bordeaux); margin-bottom: 0.5rem; font-weight: 700;
         }
 
-        .card-title {
-            font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            margin: 0;
+        .example-container {
+            background: rgba(244, 140, 46, 0.05); padding: 1rem; border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .example-container h5 {
+            color: var(--orange); margin-bottom: 0.5rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .example-image {
+            width: 100%; max-width: 400px; height: 200px; object-fit: cover;
+            border-radius: 10px; margin: 0.5rem 0; box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .image-caption {
+            font-size: 0.8rem; color: #666; text-align: center; margin-top: 0.5rem;
         }
 
-        .tap-hint {
-            margin-top: 1rem; font-size: 0.8rem; opacity: 0.6; font-weight: 600;
-        }
-
-        /* --- DESIGN FACE ARRIÈRE --- */
-        .flip-card-back {
-            color: white;
-            transform: rotateY(180deg);
-            text-align: left;
-            align-items: flex-start; /* Texte aligné à gauche pour la lecture */
-        }
-
-        .flip-card-back h3 { margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 5px; width: 100%; }
-        .flip-card-back p { font-size: 0.95rem; line-height: 1.5; }
-
-        /* --- COULEURS SPÉCIFIQUES PAR CARTE --- */
-        
-        /* 1. INNOVATION (Bordeaux) */
-        .card-innovation .flip-card-front { border-color: var(--bordeaux); }
-        .card-innovation .icon-box { color: var(--bordeaux); }
-        .card-innovation .flip-card-back { background: var(--bordeaux); }
-
-        /* 2. INVENTION (Orange) */
-        .card-invention .flip-card-front { border-color: var(--orange); }
-        .card-invention .icon-box { color: var(--orange); }
-        .card-invention .flip-card-back { background: var(--orange); }
-
-        /* 3. DÉCOUVERTE (Teal) */
-        .card-decouverte .flip-card-front { border-color: var(--teal); }
-        .card-decouverte .icon-box { color: var(--teal); }
-        .card-decouverte .flip-card-back { background: var(--teal); }
-
-        /* 4. IDÉES (Bleu) */
-        .card-idees .flip-card-front { border-color: var(--blue); }
-        .card-idees .icon-box { color: var(--blue); }
-        .card-idees .flip-card-back { background: var(--blue); }
-
-        /* 5. CRÉATIVITÉ (Jaune/Or) */
-        .card-creativite .flip-card-front { border-color: #f39c12; }
-        .card-creativite .icon-box { color: #f39c12; }
-        .card-creativite .flip-card-back { background: #f39c12; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-
-
-        /* --- BOUTON FINAL --- */
+        /* --- BOUTON DE VALIDATION --- */
         .finish-btn {
-            margin-top: 3rem;
-            background: var(--text-main); color: white;
-            padding: 1rem 3rem; border-radius: 50px; border: none;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            opacity: 0.5; pointer-events: none; /* Désactivé au début */
-            transition: all 0.3s;
+            background: var(--bordeaux); color: white; border: none;
+            padding: 1rem 3rem; border-radius: 50px; font-weight: 700;
+            cursor: pointer; margin: 2rem auto; display: block;
+            transition: all 0.3s; opacity: 0.5; pointer-events: none;
         }
         .finish-btn.active {
             opacity: 1; pointer-events: all; background: var(--teal);
-            transform: scale(1.05); box-shadow: 0 10px 20px rgba(46, 175, 125, 0.3);
+        }
+        .finish-btn:hover {
+            transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .mosaic-grid { grid-template-columns: 1fr; }
-            .flip-card { height: 200px; }
+            .concept-header { flex-direction: column; align-items: flex-start; }
+            .concept-title { margin-top: 0.5rem; }
         }
     </style>
 </head>
 <body>
-
-    <!-- Barre de Navigation -->
-    <div class="top-bar">
-        <a href="plateforme_apprenant.html" class="back-btn">
-            <i class="fa-solid fa-arrow-left"></i> Retour au Parcours
+    <!-- Navigation -->
+    <nav class="top-nav">
+        <a href="module1_hub.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Retour au Module 1
         </a>
-        <div class="progress-indicator" id="progressText">
-            0/5 Cartes découvertes
+        <div class="xp-display">
+            <span id="progressText">0/5 Concepts</span>
+            <div class="xp-bar-bg">
+                <div class="xp-bar-fill" id="xpBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- En-tête -->
+    <header class="page-header">
+        <h1>Les Concepts Clés de l'Innovation</h1>
+        <p>Cliquez sur chaque concept pour en explorer la portée. Comprendre ces nuances est essentiel pour dialoguer avec l'écosystème et identifier des opportunités.</p>
+    </header>
+
+    <!-- Liste des concepts -->
+    <div class="concepts-list">
+        <!-- CONCEPT 1 : INNOVATION -->
+        <div class="concept-card" data-read="false" data-expanded="false" onclick="toggleConcept(this)">
+            <div class="concept-header">
+                <div class="concept-icon icon-innovation"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3 class="concept-title">Innovation</h3>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="concept-content">
+                <div class="content-inner">
+                    <div class="concept-explanation">
+                        <h4>Le concept</h4>
+                        <p>L'innovation est un <strong>processus de transformation</strong> qui donne vie à une idée ou une invention en la rendant <strong>utile, adoptable et créatrice de valeur</strong>. Elle ne se limite pas à la nouveauté technique, mais inclut aussi les changements organisationnels, sociaux ou de modèle économique.</p>
+                        <p>Contrairement à une invention (qui peut rester théorique), l'innovation est <strong>adoptée par un marché ou une communauté</strong> et répond à un besoin identifié.</p>
+                    </div>
+
+                    <div class="example-container">
+                        <h5><i class="fa-solid fa-mobile-screen"></i> Exemple concret</h5>
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                             alt="Application mobile de recettes interactives (exemple d'innovation)"
+                             class="example-image">
+                        <p class="image-caption">Une application qui suggère des recettes en fonction des ingrédients scannés : une <strong>innovation</strong> car elle combine technologie (reconnaissance d'image), utilité (réduction du gaspillage) et adoption massive.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONCEPT 2 : INVENTION -->
+        <div class="concept-card" data-read="false" data-expanded="false" onclick="toggleConcept(this)">
+            <div class="concept-header">
+                <div class="concept-icon icon-invention"><i class="fa-solid fa-flask"></i></div>
+                <h3 class="concept-title">Invention</h3>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="concept-content">
+                <div class="content-inner">
+                    <div class="concept-explanation">
+                        <h4>Le concept</h4>
+                        <p>Une invention est une <strong>création technique ou scientifique nouvelle</strong>, souvent protégée par un brevet. Elle peut être révolutionnaire (ex : l'ampoule électrique) ou incrémentale (ex : une amélioration de batterie).</p>
+                        <p>À la différence de l'innovation, une invention n'est pas nécessairement <strong>adoptée ou commercialisée</strong>. Elle peut rester au stade de prototype ou de publication académique.</p>
+                    </div>
+
+                    <div class="example-container">
+                        <h5><i class="fa-solid fa-microchip"></i> Exemple concret</h5>
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80"
+                             alt="Prototype de puce quantique en laboratoire"
+                             class="example-image">
+                        <p class="image-caption">Un prototype de puce quantique en laboratoire est une <strong>invention</strong> : il représente une avancée technique majeure, mais son adoption massive (innovation) dépendra de son industrialisation et de son intégration dans des produits grand public.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONCEPT 3 : CRÉATIVITÉ -->
+        <div class="concept-card" data-read="false" data-expanded="false" onclick="toggleConcept(this)">
+            <div class="concept-header">
+                <div class="concept-icon icon-creativite"><i class="fa-solid fa-paint-brush"></i></div>
+                <h3 class="concept-title">Créativité</h3>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="concept-content">
+                <div class="content-inner">
+                    <div class="concept-explanation">
+                        <h4>Le concept</h4>
+                        <p>La créativité est la <strong>capacité à générer des idées originales</strong>, à faire des connexions inattendues ou à voir les problèmes sous un angle nouveau. Elle est à la source de l'invention et de l'innovation, mais ne suffit pas à elle seule.</p>
+                        <p>Exemple : Imaginer un vélo qui se replie en 2 secondes est un acte créatif. Le transformer en un produit viable (innovation) ou brevetable (invention) nécessite des étapes supplémentaires.</p>
+                    </div>
+
+                    <div class="example-container">
+                        <h5><i class="fa-solid fa-bicycle"></i> Exemple concret</h5>
+                        <img src="https://images.unsplash.com/photo-1605629921711-2f6b00c6bbf4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                             alt="Croquis créatifs de vélos pliants"
+                             class="example-image">
+                        <p class="image-caption">Ces croquis explorent des designs de vélos pliants : un exemple de <strong>créativité</strong> pure. Pour devenir une innovation, il faudrait prototyper, tester l'ergonomie, et trouver un modèle économique viable.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONCEPT 4 : IDÉE -->
+        <div class="concept-card" data-read="false" data-expanded="false" onclick="toggleConcept(this)">
+            <div class="concept-header">
+                <div class="concept-icon icon-idee"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3 class="concept-title">Idée</h3>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="concept-content">
+                <div class="content-inner">
+                    <div class="concept-explanation">
+                        <h4>Le concept</h4>
+                        <p>Une idée est une <strong>pensée ou suggestion</strong>, nouvelle ou existante, qui peut être simple ou complexe. Elle est le point de départ de la créativité, mais n'a pas de valeur en soi sans mise en œuvre.</p>
+                        <p>Exemple : "Créer une appli pour partager ses plantes" est une idée. La rendre concrète (design, développement, adoption) relève de la créativité, puis de l'innovation.</p>
+                    </div>
+
+                    <div class="example-container">
+                        <h5><i class="fa-solid fa-seedling"></i> Exemple concret</h5>
+                        <img src="https://images.unsplash.com/photo-1518621736487-463250e0f23e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                             alt="Post-it avec des idées de projets"
+                             class="example-image">
+                        <p class="image-caption">Un post-it avec l'idée "Créer une appli pour échanger des plantes entre voisins" est une <strong>idée</strong>. Sa réalisation dépendra de la créativité (design, fonctionnalités) et de l'innovation (adoption par les utilisateurs).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONCEPT 5 : START-UP -->
+        <div class="concept-card" data-read="false" data-expanded="false" onclick="toggleConcept(this)">
+            <div class="concept-header">
+                <div class="concept-icon icon-startup"><i class="fa-solid fa-rocket"></i></div>
+                <h3 class="concept-title">Start-up</h3>
+                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="concept-content">
+                <div class="content-inner">
+                    <div class="concept-explanation">
+                        <h4>Le concept</h4>
+                        <p>Une start-up est une <strong>jeune entreprise</strong> conçue pour tester un modèle économique <strong>scalable et reproductible</strong>, dans un environnement incertain. Elle se distingue par :</p>
+                        <ul>
+                            <li><strong>Croissance rapide</strong> (vs PME classique)</li>
+                            <li><strong>Expérimentation</strong> (pivot fréquent)</li>
+                            <li><strong>Levée de fonds</strong> (pour accélérer la croissance)</li>
+                        </ul>
+                        <p>Exemple : Une start-up comme <strong>Back Market</strong> (reconditionnement de smartphones) a transformé un concept (économie circulaire) en un modèle scalable.</p>
+                    </div>
+
+                    <div class="example-container">
+                        <h5><i class="fa-solid fa-chart-line"></i> Exemple concret</h5>
+                        <img src="https://images.unsplash.com/photo-1630076247285-0d9d4t248ff8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                             alt="Équipe de start-up en réunion"
+                             class="example-image">
+                        <p class="image-caption">Une équipe de start-up en train de valider son <em>product-market fit</em> : un moment clé où l'<strong>idée</strong> (problème identifié) devient une <strong>innovation</strong> (solution adoptée) grâce à la <strong>créativité</strong> (itérations rapides).</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        <div class="intro-text">
-            <h1>Les Fondations</h1>
-            <p>Passez votre souris (ou touchez) les cartes pour révéler les définitions essentielles. Maîtriser ces nuances est la première étape de l'innovateur.</p>
-        </div>
-
-        <div class="mosaic-grid">
-
-            <!-- CARTE 1 : INNOVATION -->
-            <div class="flip-card card-innovation" onclick="revealCard(this)">
-                <div class="flip-card-inner">
-                    <!-- FACE AVANT -->
-                    <div class="flip-card-front">
-                        <div class="icon-box"><i class="fa-solid fa-lightbulb"></i></div>
-                        <h2 class="card-title">Innovation</h2>
-                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
-                    </div>
-                    <!-- FACE ARRIÈRE -->
-                    <div class="flip-card-back">
-                        <h3><i class="fa-solid fa-rocket"></i> Création de Valeur</h3>
-                        <p>C'est l'application réussie d'idées nouvelles. Contrairement à la simple invention, l'innovation doit rencontrer son marché et créer de la valeur (économique, sociale ou d'usage).</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARTE 2 : INVENTION -->
-            <div class="flip-card card-invention" onclick="revealCard(this)">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="icon-box"><i class="fa-solid fa-flask"></i></div>
-                        <h2 class="card-title">Invention</h2>
-                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><i class="fa-solid fa-fingerprint"></i> Nouveauté Pure</h3>
-                        <p>Création d'un concept ou d'une technique entièrement nouvelle qui n'existait pas auparavant. Elle n'a pas nécessairement d'application commerciale immédiate.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARTE 3 : DÉCOUVERTE -->
-            <div class="flip-card card-decouverte" onclick="revealCard(this)">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="icon-box"><i class="fa-solid fa-eye"></i></div>
-                        <h2 class="card-title">Découverte</h2>
-                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><i class="fa-solid fa-magnifying-glass"></i> Révéler l'Existant</h3>
-                        <p>Mise au jour de faits ou de connaissances qui existaient déjà (lois physiques, éléments chimiques) mais qui étaient inconnus. Ce n'est pas une création, c'est une révélation.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARTE 4 : IDÉES -->
-            <div class="flip-card card-idees" onclick="revealCard(this)">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
-                        <h2 class="card-title">Idées</h2>
-                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><i class="fa-regular fa-lightbulb"></i> L'Étincelle</h3>
-                        <p>Le point de départ abstrait. Une idée est une représentation mentale. Sans exécution, une idée n'est ni une invention, ni une innovation.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARTE 5 : CRÉATIVITÉ -->
-            <div class="flip-card card-creativite" onclick="revealCard(this)">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="icon-box"><i class="fa-solid fa-palette"></i></div>
-                        <h2 class="card-title">Créativité</h2>
-                        <div class="tap-hint"><i class="fa-solid fa-hand-pointer"></i> Révéler</div>
-                    </div>
-                    <div class="flip-card-back">
-                        <h3><i class="fa-solid fa-brain"></i> Le Moteur</h3>
-                        <p>La capacité à générer des idées nouvelles et originales. C'est le carburant mental qui permet d'aboutir à l'invention.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <button id="finishBtn" class="finish-btn" onclick="finishLevel()">
-            Valider le Module (+150 XP) <i class="fa-solid fa-check-circle"></i>
-        </button>
-
-    </div>
+    <!-- Bouton de validation -->
+    <button id="finishBtn" class="finish-btn" onclick="validateModule()">
+        Valider ce chapitre <i class="fa-solid fa-check-circle"></i>
+    </button>
 
     <script>
+        // Gestion des cartes
         let revealedCount = 0;
-        const totalCards = 5;
+        const totalConcepts = 5;
         const finishBtn = document.getElementById('finishBtn');
-        const progressText = document.getElementById('progressText');
 
-        function revealCard(card) {
-            // Ajouter la classe pour retourner la carte (utile sur mobile pour garder l'état)
-            card.classList.toggle('flipped');
+        function toggleConcept(card) {
+            const isExpanded = card.getAttribute('data-expanded') === 'true';
+            card.setAttribute('data-expanded', isExpanded ? 'false' : 'true');
 
-            // Compter les cartes découvertes (une seule fois par carte)
-            if (!card.hasAttribute('data-read')) {
+            if (!card.getAttribute('data-read')) {
                 card.setAttribute('data-read', 'true');
                 revealedCount++;
                 updateProgress();
@@ -316,20 +351,24 @@
         }
 
         function updateProgress() {
-            progressText.innerText = `${revealedCount}/${totalCards} Cartes découvertes`;
-            
-            // Si toutes les cartes sont lues, activer le bouton final
-            if (revealedCount === totalCards) {
+            const progress = (revealedCount / totalConcepts) * 100;
+            document.getElementById('xpBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = revealedCount + '/' + totalConcepts + ' Concepts';
+
+            if (revealedCount === totalConcepts) {
                 finishBtn.classList.add('active');
             }
         }
 
-        function finishLevel() {
-            alert("Félicitations ! Vous avez acquis le vocabulaire fondamental.\n\n+150 XP ajoutés à votre profil !");
-            // Redirection vers le parcours
-            window.location.href = 'plateforme_apprenant.html';
+        function validateModule() {
+            if (revealedCount === totalConcepts) {
+                alert('Félicitations ! Vous maîtrisez les concepts clés. Passez au chapitre suivant : "Cycle de Valeur".');
+                // Redirection vers la page suivante (à adapter)
+                // window.location.href = 'module1_cycle_valeur.html';
+            } else {
+                alert('Explorez tous les concepts avant de valider ce chapitre !');
+            }
         }
     </script>
-
 </body>
 </html>
