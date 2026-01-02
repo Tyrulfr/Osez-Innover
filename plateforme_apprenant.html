@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARCOURS APPRENANT | Projet Inno</title>
-    
+    <title>Plateforme Apprenant | Projet Inno</title>
+
     <!-- Polices & Icônes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- 1. DESIGN TOKENS --- */
+        /* --- DESIGN TOKENS (aligné sur vos autres pages) --- */
         :root {
-            --bordeaux: #580F45; 
+            --bordeaux: #580F45;
             --orange: #F48C2E;
             --teal: #2EAF7D;
             --blue: #2A325E;
-            --yellow: #f1c40f; /* Ajout pour "En construction" */
-            
+            --yellow: #f1c40f;
             --bg-page: #F0F2F5;
             --bg-card: #FFFFFF;
             --text-main: #2A325E;
             --text-light: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 15px;
         }
 
         [data-theme="dark"] {
@@ -32,339 +33,656 @@
             --text-light: #A0A0A0;
         }
 
-        * { box-sizing: border-box; transition: all 0.3s ease; }
-        
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
         body {
             margin: 0; padding: 0;
             font-family: 'Open Sans', sans-serif;
             background-color: var(--bg-page);
             color: var(--text-main);
-            background-image: radial-gradient(rgba(88, 15, 69, 0.05) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(88, 15, 69, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-            padding-bottom: 80px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
-        a { text-decoration: none; color: inherit; }
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+        }
 
-        /* --- 2. HUD (BARRE DE JEU) --- */
-        .gamification-bar {
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- BARRE DE NAVIGATION --- */
+        .top-nav {
             background: var(--bg-card);
-            padding: 1rem 5%;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-bottom: 3px solid var(--orange);
         }
 
-        .player-info { display: flex; align-items: center; gap: 15px; }
-        .avatar {
-            width: 50px; height: 50px;
-            background: linear-gradient(45deg, var(--bordeaux), var(--orange));
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--bordeaux);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.5rem;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 1.2rem;
-            border: 3px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .level-info { display: flex; flex-direction: column; }
-        .level-title { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; color: var(--bordeaux); }
-        [data-theme="dark"] .level-title { color: var(--orange); }
-
-        .xp-container { width: 150px; height: 8px; background: #eee; border-radius: 10px; margin-top: 5px; overflow: hidden; }
-        .xp-bar { width: 10%; height: 100%; background: var(--teal); border-radius: 10px; }
-
-        .hud-actions { display: flex; gap: 1rem; align-items: center; }
-        .btn-icon {
-            background: rgba(0,0,0,0.05); border: none; width: 40px; height: 40px; border-radius: 50%;
-            cursor: pointer; color: var(--text-main); display: flex; align-items: center; justify-content: center;
-        }
-        .btn-icon:hover { background: var(--orange); color: white; transform: rotate(15deg); }
-
-        /* --- 3. MAP DES MODULES --- */
-        .container { max-width: 900px; margin: 3rem auto; padding: 0 1rem; }
-        
-        .section-title {
-            text-align: center; margin-bottom: 4rem;
-            font-size: 2.5rem; color: var(--bordeaux); text-transform: uppercase; letter-spacing: -1px;
-        }
-        [data-theme="dark"] .section-title { color: white; }
-
-        .mission-map {
-            display: flex; flex-direction: column; gap: 2.5rem;
-            position: relative;
-            padding-left: 20px; /* Espace pour la ligne */
+        .theme-btn:hover {
+            background: rgba(244, 140, 46, 0.1);
         }
 
-        /* Ligne de connexion verticale */
-        .mission-map::before {
-            content: ''; position: absolute; left: 60px; top: 40px; bottom: 40px; width: 4px;
-            background: rgba(0,0,0,0.1); z-index: -1;
+        /* --- BARRE DE PROGRESSION --- */
+        .progress-bar {
+            background: var(--bg-card);
+            padding: 0.8rem 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
-        [data-theme="dark"] .mission-map::before { background: rgba(255,255,255,0.1); }
 
-        /* --- CARTE MODULE --- */
+        .progress-label {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .progress-fill {
+            flex: 1;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: 30%;
+            background: var(--teal);
+            transition: width 0.5s ease;
+        }
+
+        .progress-percent {
+            font-weight: 700;
+            color: var(--text-main);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* --- CONTAINER PRINCIPAL --- */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* --- EN-TÊTE DE LA PLATEFORME --- */
+        .platform-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .platform-header h1 {
+            font-size: 2.5rem;
+            color: var(--bordeaux);
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-header p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- GRILLE DES MODULES --- */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
         .module-card {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 2rem;
-            width: 100%;
-            display: flex; align-items: center; gap: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            position: relative;
-            border: 2px solid transparent;
-            cursor: pointer;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
             transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        /* Module Standard (Actif) */
         .module-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* Style spécifique pour le module courant/principal */
-        .module-featured {
-            border-color: var(--orange);
-            box-shadow: 0 15px 40px rgba(244, 140, 46, 0.15);
-        }
-        .module-featured .module-number { background: var(--orange); }
-
-        /* Style pour les modules en construction */
-        .module-wip {
-            border-left: 5px solid var(--yellow);
-        }
-        .module-wip .module-number { background: var(--text-light); opacity: 0.8; }
-        
-        /* Contenu Carte */
-        .module-number {
-            font-size: 1.5rem; font-weight: 900; color: white;
-            background: var(--bordeaux); width: 80px; height: 80px;
-            border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; z-index: 2; /* Pour passer devant la ligne */
+        .card-header {
+            padding: 1.5rem;
+            text-align: center;
         }
 
-        .module-content { flex: 1; }
-        .module-title { font-size: 1.4rem; margin: 0 0 0.5rem 0; font-weight: 800; }
-        .module-desc { font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; }
-        
-        .tags { display: flex; gap: 10px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; flex-wrap: wrap; }
-        .tag { padding: 4px 10px; border-radius: 4px; background: rgba(0,0,0,0.05); color: var(--text-light); }
-        .tag-cat { color: var(--bordeaux); background: rgba(88, 15, 69, 0.1); }
-        .tag-xp { color: var(--teal); background: rgba(46, 175, 125, 0.1); }
-        
-        /* Badge Construction */
-        .tag-wip { 
-            color: #d35400; 
-            background: #fce5cd; 
-            display: flex; align-items: center; gap: 5px;
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
         }
 
-        .btn-start {
-            background: var(--bordeaux); color: white; border: none;
-            padding: 10px 25px; border-radius: 50px; font-weight: 700;
-            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        .icon-module1 { background: var(--bordeaux); }
+        .icon-module2 { background: var(--teal); }
+        .icon-module3 { background: var(--orange); }
+        .icon-module4 { background: var(--blue); }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .card-progress {
+            height: 4px;
+            background: #eee;
+            margin: 1rem 0;
+        }
+
+        .card-progress-fill {
+            height: 100%;
+            background: var(--teal);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .module-card[data-progress="100"] .card-progress-fill {
+            width: 100%;
+        }
+
+        .module-card[data-progress="80"] .card-progress-fill {
+            width: 80%;
+        }
+
+        .module-card[data-progress="50"] .card-progress-fill {
+            width: 50%;
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(46, 175, 125, 0.1);
+            color: var(--teal);
+        }
+
+        .status-locked {
+            background: rgba(88, 15, 69, 0.1);
+            color: var(--bordeaux);
+        }
+
+        .status-coming {
+            background: rgba(244, 140, 46, 0.1);
+            color: var(--orange);
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--bordeaux);
+        }
+
+        /* --- SECTION "EN COURS" --- */
+        .in-progress-section {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--bordeaux);
+        }
+
+        .current-module {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .module-content {
+            flex: 1;
+        }
+
+        .module-content h3 {
+            color: var(--bordeaux);
+            margin-bottom: 1rem;
+        }
+
+        .module-steps {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .module-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .step-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+            flex-shrink: 0;
+            margin-top: 0.2rem;
+        }
+
+        .step-done {
+            background: var(--teal);
+        }
+
+        .step-current {
+            background: var(--orange);
+        }
+
+        .step-pending {
+            background: #ccc;
+        }
+
+        .step-content h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-main);
+        }
+
+        .step-content p {
+            margin: 0;
+            color: var(--text-light);
             font-size: 0.9rem;
         }
-        .btn-start:hover { background: var(--orange); }
-        
-        /* Bouton "En travaux" */
-        .btn-wip {
-            background: transparent; color: var(--text-light); border: 2px solid #ddd;
+
+        .module-sidebar {
+            width: 250px;
+            background: rgba(244, 140, 46, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
         }
-        .btn-wip:hover { background: #eee; color: var(--text-main); border-color: #ccc; }
+
+        .sidebar-title {
+            font-weight: 700;
+            color: var(--bordeaux);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-resources {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-resources li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .resource-icon {
+            color: var(--orange);
+            width: 20px;
+            text-align: center;
+        }
+
+        /* --- PIED DE PAGE --- */
+        .footer {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--bordeaux);
+        }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .mission-map::before { left: 40px; } /* Ajustement ligne mobile */
-            .module-card { padding: 1.5rem; gap: 1rem; }
-            .module-number { width: 60px; height: 60px; font-size: 1.2rem; }
-            .gamification-bar { flex-direction: column; gap: 1rem; }
-            .hud-actions { width: 100%; justify-content: center; }
-            .player-info { width: 100%; justify-content: space-between; }
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .current-module {
+                flex-direction: column;
+            }
+
+            .module-sidebar {
+                width: 100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
-<body data-theme="light">
-
-    <!-- HUD : Barre de Progression -->
-    <nav class="gamification-bar">
-        <div class="player-info">
-            <div class="avatar">J</div>
-            <div class="level-info">
-                <span class="level-title">Niveau 1 : Explorateur</span>
-                <div class="xp-container" title="0/1000 XP">
-                    <div class="xp-bar" style="width: 15%;"></div>
-                </div>
+<body>
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <i class="fa-solid fa-rocket" style="color: var(--orange); margin-right: 0.5rem;"></i>
+                PROJET INNO
             </div>
-            <div style="font-weight:bold; color:var(--orange); font-size:0.9rem;">150 XP</div>
         </div>
-
-        <div class="hud-actions">
-            <button class="btn-icon" onclick="toggleTheme()" title="Mode Nuit/Jour"><i class="fa-solid fa-moon"></i></button>
-            <a href="index.html" class="btn-icon" title="Quitter"><i class="fa-solid fa-power-off"></i></a>
+        <div class="nav-right">
+            <button class="theme-btn" onclick="toggleTheme()">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- MAP DES MODULES -->
+    <!-- BARRE DE PROGRESSION -->
+    <div class="progress-bar">
+        <span class="progress-label">Progression globale</span>
+        <div class="progress-fill"></div>
+        <span class="progress-percent">30%</span>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
     <div class="container">
-        <h1 class="section-title">Votre Parcours</h1>
+        <!-- EN-TÊTE -->
+        <div class="platform-header">
+            <h1>VOTRE PARCOURS D'APPRENTISSAGE</h1>
+            <p>Explorez les modules à votre rythme. Chaque étape vous rapproche de la maîtrise des enjeux de l'innovation.</p>
+        </div>
 
-        <div class="mission-map">
-            
-            <!-- MODULE 1 (Le nouveau départ) -->
-            <div class="module-card module-featured" onclick="startModule(1)">
-                <div class="module-number">M1</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Comprendre</span>
-                        <span class="tag tag-xp">+150 XP</span>
+        <!-- GRILLE DES MODULES -->
+        <div class="modules-grid">
+            <!-- MODULE 1 : FONDATIONS -->
+            <a href="module1_hub.html" class="module-card" data-progress="100">
+                <div class="card-header">
+                    <div class="module-icon icon-module1"><i class="fa-solid fa-book-open"></i></div>
+                    <h3>Module 1 : Fondations</h3>
+                    <p>Maîtrisez les concepts clés pour comprendre ce qui distingue une simple idée d'une véritable innovation.</p>
+                    <div class="card-progress">
+                        <div class="card-progress-fill" style="width: 100%;"></div>
                     </div>
-                    <h2 class="module-title">Vocabulaire & Typologie</h2>
-                    <p class="module-desc">Innovation de rupture, incrémentale, adjacente... Maîtrisez le langage des innovateurs.</p>
-                    <button class="btn-start">
-                        <i class="fa-solid fa-play"></i> Accéder au module
-                    </button>
+                </div>
+                <div class="card-footer">
+                    <span class="status-badge status-active">Terminé</span>
+                    <div class="action-link">
+                        Revoir
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- MODULE 2 : IDENTIFIER UN POTENTIEL INNOVANT -->
+            <div class="module-card" data-progress="50">
+                <div class="card-header">
+                    <div class="module-icon icon-module2"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <h3>Module 2 : Identifier un potentiel innovant</h3>
+                    <p>Acquérez les réflexes pour évaluer l'impact et la faisabilité d'un projet innovant.</p>
+                    <div class="card-progress">
+                        <div class="card-progress-fill" style="width: 50%;"></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span class="status-badge status-active">En cours</span>
+                    <div class="action-link">
+                        Continuer
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- MODULE 2 -->
-            <div class="module-card module-wip" onclick="startModule(2)">
-                <div class="module-number">M2</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Détecter</span>
-                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
+            <!-- MODULE 3 : ÉCOSYSTÈMES D'INNOVATION -->
+            <div class="module-card" data-progress="0">
+                <div class="card-header">
+                    <div class="module-icon icon-module3"><i class="fa-solid fa-people-group"></i></div>
+                    <h3>Module 3 : Écosystèmes d'innovation</h3>
+                    <p>Découvrez comment les acteurs publics et privés collaborent pour innover.</p>
+                    <div class="card-progress">
+                        <div class="card-progress-fill" style="width: 0%;"></div>
                     </div>
-                    <h2 class="module-title">Identifier le potentiel</h2>
-                    <p class="module-desc">Comment repérer une opportunité et évaluer si une idée mérite d'être développée.</p>
-                    <button class="btn-start btn-wip">
-                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
-                    </button>
+                </div>
+                <div class="card-footer">
+                    <span class="status-badge status-locked">Verrouillé</span>
+                    <div class="action-link">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- MODULE 3 -->
-            <div class="module-card module-wip" onclick="startModule(3)">
-                <div class="module-number">M3</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Protéger</span>
-                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
+            <!-- MODULE 4 : PROJET PRATIQUE -->
+            <div class="module-card" data-progress="0">
+                <div class="card-header">
+                    <div class="module-icon icon-module4"><i class="fa-solid fa-flask"></i></div>
+                    <h3>Module 4 : Projet pratique</h3>
+                    <p>Appliquez vos connaissances à un cas réel avec accompagnement.</p>
+                    <div class="card-progress">
+                        <div class="card-progress-fill" style="width: 0%;"></div>
                     </div>
-                    <h2 class="module-title">Présenter, PI & Contrats</h2>
-                    <p class="module-desc">Savoir pitcher son projet et comprendre les bases de la Propriété Intellectuelle (PI).</p>
-                    <button class="btn-start btn-wip">
-                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
-                    </button>
+                </div>
+                <div class="card-footer">
+                    <span class="status-badge status-coming">À venir</span>
+                    <div class="action-link">
+                        <i class="fa-solid fa-calendar"></i>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- MODULE 4 -->
-            <div class="module-card module-wip" onclick="startModule(4)">
-                <div class="module-number">M4</div>
+        <!-- SECTION "EN COURS" -->
+        <div class="in-progress-section">
+            <h2 class="section-title">
+                <i class="fa-solid fa-play" style="color: var(--orange);"></i>
+                En cours : Module 2
+            </h2>
+            <div class="current-module">
                 <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Connecter</span>
-                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
-                    </div>
-                    <h2 class="module-title">Écosystèmes Clés</h2>
-                    <p class="module-desc">Cartographie des acteurs de l'innovation et comment interagir avec eux.</p>
-                    <button class="btn-start btn-wip">
-                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
-                    </button>
+                    <h3>Identifier un potentiel innovant</h3>
+                    <p>Dans ce module, vous apprendrez à évaluer la nouveauté, la faisabilité et l'impact sociétal d'un projet.</p>
+
+                    <ul class="module-steps">
+                        <li>
+                            <div class="step-status step-done">1</div>
+                            <div class="step-content">
+                                <h4>Les critères d'innovation</h4>
+                                <p>Distinguer nouveauté, faisabilité et impact.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-status step-current">2</div>
+                            <div class="step-content">
+                                <h4>Étude de cas</h4>
+                                <p>Analyse d'un projet réel (ex: PUI Paris-Saclay).</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-status step-pending">3</div>
+                            <div class="step-content">
+                                <h4>Quiz final</h4>
+                                <p>Validez vos acquis avec 10 questions.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="module-sidebar">
+                    <div class="sidebar-title">Ressources</div>
+                    <ul class="sidebar-resources">
+                        <li>
+                            <div class="resource-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                            <span>Fiche mémo (PDF)</span>
+                        </li>
+                        <li>
+                            <div class="resource-icon"><i class="fa-solid fa-video"></i></div>
+                            <span>Vidéo intro (5 min)</span>
+                        </li>
+                        <li>
+                            <div class="resource-icon"><i class="fa-solid fa-question"></i></div>
+                            <span>FAQ</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- MODULE 5 -->
-            <div class="module-card module-wip" onclick="startModule(5)">
-                <div class="module-number">M5</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">Collaborer</span>
-                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
-                    </div>
-                    <h2 class="module-title">Coopérer en Projet</h2>
-                    <p class="module-desc">Méthodes agiles et postures pour travailler efficacement en équipe innovante.</p>
-                    <button class="btn-start btn-wip">
-                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
-                    </button>
-                </div>
-            </div>
-
-            <!-- MODULE 6 (FINAL) -->
-            <div class="module-card module-wip" onclick="startModule(6)">
-                <div class="module-number">M6</div>
-                <div class="module-content">
-                    <div class="tags">
-                        <span class="tag tag-cat">S'évaluer</span>
-                        <span class="tag tag-wip"><i class="fa-solid fa-person-digging"></i> En construction</span>
-                    </div>
-                    <h2 class="module-title">Évaluation & Potentiel</h2>
-                    <p class="module-desc">Bilan global des compétences et déblocage de votre parcours personnalisé.</p>
-                    <button class="btn-start btn-wip">
-                        <i class="fa-solid fa-hammer"></i> Consulter le chantier
-                    </button>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <!-- LOGIQUE JAVASCRIPT COMPLETE -->
+    <!-- PIED DE PAGE -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <span style="font-weight: 700;">Projet INNO</span> © 2025 - Université Paris-Saclay
+            </div>
+            <div class="footer-links">
+                <a href="#">Mentions légales</a>
+                <a href="#">Accessibilité</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
     <script>
-        // 1. Gestion du Thème (Dark/Light)
+        // Toggle thème sombre/clair
         function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            body.setAttribute('data-theme', newTheme);
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+
+            const btn = document.querySelector('.theme-btn');
+            if (newTheme === 'dark') {
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+
+            // Sauvegarde la préférence (optionnel)
             localStorage.setItem('theme', newTheme);
-            
-            // Changer l'icône
-            const btnIcon = document.querySelector('.hud-actions button i');
-            if(newTheme === 'dark') {
-                btnIcon.classList.remove('fa-moon');
-                btnIcon.classList.add('fa-sun');
-            } else {
-                btnIcon.classList.remove('fa-sun');
-                btnIcon.classList.add('fa-moon');
-            }
         }
 
-        // Appliquer le thème sauvegardé au chargement
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            toggleTheme();
-            if(savedTheme === 'light') toggleTheme();
-        }
+        // Charge le thème sauvegardé
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
 
-        // 2. Logique de Navigation Modules
-        function startModule(id) {
-            const titles = [
-                "", // M0 n'existe plus
-                "Vocabulaire & Typologie", 
-                "Identifier le potentiel", 
-                "Présenter, PI & Contrats", 
-                "Écosystèmes Clés", 
-                "Coopérer en Projet", 
-                "Évaluation & Potentiel"
-            ];
-            
-            if (id === 1) {
-                 alert(`Lancement du Module ${id} : ${titles[id]}\n\n(Ce module est prêt.)`);
-                 // window.location.href = `modules/m${id}.html`;
-            } else {
-                 alert(`🚧 Module ${id} : ${titles[id]}\n\nCe contenu est actuellement en cours de construction.`);
+            const btn = document.querySelector('.theme-btn');
+            if (savedTheme === 'dark') {
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
             }
-        }
+        });
+
+        // Simulation de progression (pour démo)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Met à jour la barre de progression globale
+            const progressFill = document.querySelector('.progress-fill::after');
+            setTimeout(() => {
+                document.querySelector('.progress-fill').style.width = '45%';
+                document.querySelector('.progress-percent').textContent = '45%';
+            }, 500);
+        });
     </script>
 </body>
 </html>
