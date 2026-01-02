@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 : Hub | Projet Inno</title>
+
+    <!-- Polices & Icônes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bordeaux: #580F45;
+            --orange: #F48C2E;
+            --teal: #2EAF7D;
+            --blue: #2A325E;
+            --bg-page: #F0F2F5;
+            --text-main: #2A325E;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            background-image: radial-gradient(rgba(42, 50, 94, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, var(--bordeaux), #2c0824);
+            color: white; padding: 3rem 1rem; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .header-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        .back-link {
+            position: absolute; top: 20px; left: 20px;
+            color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .back-link:hover { color: white; transform: translateX(-5px); }
+        .module-tag {
+            background: rgba(255,255,255,0.2); padding: 5px 15px;
+            border-radius: 20px; font-size: 0.8rem; margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .module-header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+
+        .container {
+            max-width: 1100px; margin: 2rem auto; padding: 0 1rem;
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .sections-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem; width: 100%; margin-bottom: 3rem;
+        }
+        .section-card {
+            background: white; padding: 2rem; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s;
+            cursor: pointer; border-left: 5px solid transparent;
+            display: flex; flex-direction: column; height: 100%;
+        }
+        .section-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .card-innovation { border-color: var(--bordeaux); }
+        .card-vocabulaire { border-color: var(--teal); }
+        .card-cycle { border-color: var(--orange); }
+        .card-pui { border-color: var(--blue); }
+
+        .card-num {
+            font-weight: 900; color: rgba(0,0,0,0.1);
+            font-size: 2rem; margin-bottom: 1rem;
+        }
+        .card-header { margin-bottom: 1.5rem; }
+        .icon-circle {
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto; font-size: 1.5rem; color: white;
+        }
+        .card-innovation .icon-circle { background: var(--bordeaux); }
+        .card-vocabulaire .icon-circle { background: var(--teal); }
+        .card-cycle .icon-circle { background: var(--orange); }
+        .card-pui .icon-circle { background: var(--blue); }
+
+        .section-card h2 {
+            font-family: 'Montserrat', sans-serif; font-size: 1.3rem;
+            color: var(--text-main); margin-bottom: 0.8rem; text-align: center;
+        }
+        .section-card p {
+            color: #666; line-height: 1.5; margin-bottom: 1.5rem;
+            text-align: center; flex: 1;
+        }
+        .card-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: auto;
+        }
+        .status-badge {
+            padding: 5px 12px; border-radius: 15px; font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .status-active { background: rgba(46, 175, 125, 0.1); color: var(--teal); }
+        .status-locked { background: rgba(88, 15, 69, 0.1); color: var(--bordeaux); }
+        .action-icon { font-size: 1.2rem; color: var(--text-main); }
+
+        .progress-mini {
+            height: 4px; background: #eee; border-radius: 2px;
+            margin-top: 5px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: var(--teal); width: 0%;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .sections-grid { grid-template-columns: 1fr; }
+            .module-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="module-header">
+        <a href="plateforme_apprenant.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Retour à la Plateforme
+        </a>
+        <div class="header-content">
+            <span class="module-tag">Module 1</span>
+            <h1>Fondations & Outils</h1>
+            <p class="subtitle">Maîtrisez les concepts clés pour comprendre ce qui distingue une simple idée d'une véritable innovation de rupture.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sections-grid">
+            <!-- SECTION 1 : VOCABULAIRE (lien mis à jour) -->
+            <a href="module1_vocabulaire.html" class="section-card card-vocabulaire">
+                <span class="card-num">01</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-book-open"></i></div>
+                </div>
+                <h2>Vocabulaire de l'Innovation</h2>
+                <p>Distinguez les concepts clés : Innovation vs Invention, Découverte, Créativité. Un lexique interactif pour parler le langage des pros.</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="status-badge status-active">Disponible</span>
+                        <div class="progress-mini"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="action-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- SECTION 2 : CYCLE DE VALEUR -->
+            <a href="module1_cycle_valeur.html" class="section-card card-cycle">
+                <span class="card-num">02</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-rotate"></i></div>
+                </div>
+                <h2>Cycle de Valeur</h2>
+                <p>Comprenez comment la connaissance se transforme en innovation, grâce au modèle inspiré de Bernard Yannou.</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="status-badge status-active">Disponible</span>
+                        <div class="progress-mini"><div class="progress-fill" style="width: 80%;"></div></div>
+                    </div>
+                    <div class="action-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- SECTION 3 : CARTE DES PUI (lien mis à jour) -->
+            <a href="module1_carte_pui.html" class="section-card card-pui">
+                <span class="card-num">03</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-map-location-dot"></i></div>
+                </div>
+                <h2>Réseau des PUI</h2>
+                <p>Explorez la carte interactive des 24 Pôles Universitaires d'Innovation en France et leurs spécialisations.</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="status-badge status-active">Disponible</span>
+                        <div class="progress-mini"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="action-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+
+            <!-- SECTION 4 : CONNAISSANCE & SOCIÉTÉ (lien mis à jour) -->
+            <a href="module1_connaissance_societe.html" class="section-card card-innovation">
+                <span class="card-num">04</span>
+                <div class="card-header">
+                    <div class="icon-circle"><i class="fa-solid fa-people-group"></i></div>
+                </div>
+                <h2>Connaissance & Société</h2>
+                <p>Découvrez comment la connaissance devient un levier de transformation pour une société vertueuse.</p>
+                <div class="card-footer">
+                    <div>
+                        <span class="status-badge status-active">Disponible</span>
+                        <div class="progress-mini"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="action-icon"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
