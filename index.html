@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PROJET INNO | Accueil</title>
-    
+
     <!-- Polices Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    
+
     <!-- Icônes FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -35,11 +35,11 @@
             padding: 0;
             font-family: 'Open Sans', sans-serif;
             /* Couleur de secours (Fallack) si les variables échouent */
-            background-color: #F8F9FA; 
+            background-color: #F8F9FA;
             background-color: var(--bg-light);
             color: var(--blue);
             transition: all 0.3s ease;
-            
+
             /* Motif de fond appliqué directement au body */
             background-image: radial-gradient(rgba(42, 50, 94, 0.1) 1px, transparent 1px);
             background-size: 30px 30px;
@@ -84,7 +84,7 @@
             gap: 10px;
         }
         body.dark-mode .logo { color: white; }
-        
+
         /* Bouton Switch Mode */
         .theme-btn {
             background: none;
@@ -99,7 +99,7 @@
 
         /* --- 4. CONTENU PRINCIPAL --- */
         .hero {
-            flex: 1; 
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -118,7 +118,7 @@
             color: var(--bordeaux);
         }
         body.dark-mode h1 { color: white; }
-        
+
         .subtitle {
             font-size: 1.2rem;
             max-width: 600px;
@@ -228,7 +228,7 @@
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const btn = document.querySelector('.theme-btn');
-            
+
             if(document.body.classList.contains('dark-mode')) {
                 btn.innerHTML = '<i class="fa-solid fa-sun"></i> Mode Jour';
             } else {
